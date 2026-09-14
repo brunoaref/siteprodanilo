@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbital Sound — A caixa de som que flutua</title>
+<meta name="description" content="Orbital Sound: alto-falante Bluetooth que flutua sobre a base por levitação magnética enquanto recarrega por indução.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#0F1019;
+    --bg-1:#171929;
+    --bg-2:#1F2238;
+    --line:#2C2F4A;
+    --violet:#7C5CFF;
+    --violet-soft:#9B84FF;
+    --amber:#FFB84D;
+    --text-0:#F3F1FF;
+    --text-1:#B7B4D6;
+    --text-2:#7B7896;
+    --radius-card: 14px;
+    --maxw: 1120px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--bg-0);
+    color:var(--text-0);
+    font-family:'Inter', -apple-system, sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3, .display{
+    font-family:'Space Grotesk', 'Inter', sans-serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  a{ color:inherit; }
+  img,svg{ display:block; max-width:100%; }
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 24px;
+  }
+  section{ padding:96px 0; }
+  @media (max-width:640px){ section{ padding:64px 0; } }
+
+  :focus-visible{
+    outline:2px solid var(--amber);
+    outline-offset:3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(15,16,25,0.82);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 24px;
+    max-width:var(--maxw); margin:0 auto;
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600; font-size:1.05rem;
+  }
+  .logo-mark{
+    width:22px; height:22px; border-radius:50%;
+    background:radial-gradient(circle at 32% 30%, var(--violet-soft), var(--violet) 55%, transparent 75%);
+    box-shadow:0 0 14px 1px rgba(124,92,255,0.65);
+  }
+  nav ul{
+    list-style:none; display:flex; gap:32px; margin:0; padding:0;
+  }
+  nav ul a{
+    text-decoration:none; color:var(--text-1); font-size:0.94rem;
+    transition:color .2s ease;
+  }
+  nav ul a:hover{ color:var(--text-0); }
+  .nav-cta{
+    background:var(--violet);
+    color:#0F1019;
+    padding:9px 18px;
+    border-radius:999px;
+    font-size:0.9rem;
+    font-weight:600;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .nav-links-mobile-hide{ display:flex; }
+  @media (max-width:720px){
+    .nav-links-mobile-hide{ display:none; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    padding:88px 0 60px;
+    overflow:hidden;
+    background:
+      radial-gradient(600px 380px at 78% 8%, rgba(124,92,255,0.20), transparent 60%),
+      radial-gradient(500px 340px at 10% 90%, rgba(255,184,77,0.10), transparent 60%);
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap:56px;
+    align-items:center;
+  }
+  @media (max-width: 880px){
+    .hero-grid{ grid-template-columns:1fr; }
+  }
+  .eyebrow{
+    color:var(--amber);
+    font-size:0.86rem;
+    margin-bottom:18px;
+  }
+  h1.display{
+    font-size:clamp(2.2rem, 4.6vw, 3.4rem);
+    line-height:1.06;
+    max-width:15ch;
+  }
+  .hero p.sub{
+    margin-top:22px;
+    color:var(--text-1);
+    font-size:1.08rem;
+    max-width:44ch;
+  }
+  .hero-actions{
+    margin-top:34px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .btn-primary{
+    background:var(--violet);
+    color:#0F1019;
+    font-weight:600;
+    padding:14px 26px;
+    border-radius:999px;
+    border:none;
+    font-size:1rem;
+    text-decoration:none;
+    cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .btn-primary:hover{
+    transform:translateY(-1px);
+    box-shadow:0 8px 24px rgba(124,92,255,0.35);
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--text-0);
+    border:1px solid var(--line);
+    padding:14px 24px;
+    border-radius:999px;
+    font-size:1rem;
+    text-decoration:none;
+  }
+  .btn-ghost:hover{ border-color:var(--violet-soft); }
+
+  .hero-note{
+    margin-top:20px;
+    font-size:0.85rem;
+    color:var(--text-2);
+  }
+
+  /* ---------- Floating speaker visual ---------- */
+  .stage{
+    position:relative;
+    height:420px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .field-ring{
+    position:absolute;
+    border-radius:50%;
+    border:1px solid rgba(124,92,255,0.35);
+  }
+  .field-ring.r1{ width:340px; height:340px; animation:pulse 4.5s ease-in-out infinite; }
+  .field-ring.r2{ width:260px; height:260px; animation:pulse 4.5s ease-in-out infinite .6s; }
+  .field-ring.r3{ width:180px; height:180px; animation:pulse 4.5s ease-in-out infinite 1.2s; }
+  @keyframes pulse{
+    0%,100%{ opacity:0.25; transform:scale(1); }
+    50%{ opacity:0.55; transform:scale(1.05); }
+  }
+
+  .base-plate{
+    position:absolute;
+    bottom:64px;
+    width:180px;
+    height:22px;
+    border-radius:50%;
+    background:linear-gradient(180deg, #2A2D48, #14152280);
+    box-shadow:0 20px 40px rgba(0,0,0,0.45);
+  }
+
+  .floater{
+    position:relative;
+    width:132px;
+    height:132px;
+    border-radius:50%;
+    background:
+      radial-gradient(circle at 34% 28%, #3B3E63 0%, #23253C 55%, #17182A 100%);
+    border:1px solid #35395C;
+    box-shadow:
+      0 30px 60px rgba(0,0,0,0.5),
+      0 0 40px rgba(124,92,255,0.25),
+      inset 0 0 20px rgba(0,0,0,0.4);
+    animation: float 3.6s ease-in-out infinite;
+  }
+  .floater::before{
+    content:"";
+    position:absolute; inset:18px;
+    border-radius:50%;
+    border:1px solid #40436B;
+    background:repeating-radial-gradient(circle at 50% 50%, transparent 0 6px, rgba(255,255,255,0.02) 6px 7px);
+  }
+  .floater::after{
+    content:"";
+    position:absolute; left:50%; top:50%;
+    width:10px; height:10px; border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 12px 3px rgba(255,184,77,0.7);
+    transform:translate(-50%,-50%);
+  }
+  @keyframes float{
+    0%,100%{ transform:translateY(0px); }
+    50%{ transform:translateY(-16px); }
+  }
+  .floater-shadow{
+    position:absolute;
+    bottom:56px;
+    width:100px; height:14px;
+    border-radius:50%;
+    background:rgba(0,0,0,0.55);
+    filter:blur(6px);
+    animation: shrink 3.6s ease-in-out infinite;
+  }
+  @keyframes shrink{
+    0%,100%{ transform:scale(1); opacity:0.55; }
+    50%{ transform:scale(0.7); opacity:0.3; }
+  }
+
+  /* ---------- Section headings ---------- */
+  .section-head{
+    max-width:520px;
+    margin-bottom:52px;
+  }
+  .section-head .eyebrow{ margin-bottom:12px; }
+  .section-head h2{
+    font-size:clamp(1.6rem, 3vw, 2.2rem);
+  }
+  .section-head p{
+    color:var(--text-1);
+    margin-top:14px;
+  }
+
+  /* ---------- How it works ---------- */
+  .how{
+    background:var(--bg-1);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .how-steps{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+  }
+  @media (max-width:820px){
+    .how-steps{ grid-template-columns:1fr; }
+  }
+  .step{
+    background:var(--bg-2);
+    border:1px solid var(--line);
+    border-radius:var(--radius-card);
+    padding:28px;
+  }
+  .step-icon{
+    width:44px; height:44px;
+    border-radius:12px;
+    background:rgba(124,92,255,0.15);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:20px;
+  }
+  .step h3{
+    font-size:1.08rem;
+    margin-bottom:10px;
+  }
+  .step p{
+    color:var(--text-1);
+    font-size:0.95rem;
+    margin:0;
+  }
+
+  /* ---------- Features ---------- */
+  .features-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:var(--radius-card);
+    overflow:hidden;
+  }
+  @media (max-width:820px){
+    .features-grid{ grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:560px){
+    .features-grid{ grid-template-columns:1fr; }
+  }
+  .feature{
+    background:var(--bg-0);
+    padding:30px 26px;
+  }
+  .feature h3{
+    font-size:1rem;
+    margin-bottom:8px;
+  }
+  .feature p{
+    color:var(--text-1);
+    font-size:0.92rem;
+    margin:0;
+  }
+  .feature .num{
+    color:var(--text-2);
+    font-size:0.8rem;
+    margin-bottom:14px;
+    display:block;
+  }
+
+  /* ---------- Specs ---------- */
+  .specs{
+    background:var(--bg-1);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .specs-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 60px;
+  }
+  @media (max-width:640px){
+    .specs-grid{ grid-template-columns:1fr; }
+  }
+  .spec-row{
+    display:flex;
+    justify-content:space-between;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+    font-size:0.95rem;
+  }
+  .spec-row dt{ color:var(--text-1); }
+  .spec-row dd{ margin:0; font-weight:500; text-align:right; }
+
+  /* ---------- Testimonial ---------- */
+  .testimonial{
+    text-align:center;
+    max-width:680px;
+    margin:0 auto;
+  }
+  .testimonial p{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:clamp(1.2rem, 2.6vw, 1.6rem);
+    line-height:1.4;
+    color:var(--text-0);
+  }
+  .testimonial .who{
+    margin-top:22px;
+    color:var(--text-2);
+    font-size:0.9rem;
+  }
+
+  /* ---------- Final CTA ---------- */
+  .cta-final{
+    background:linear-gradient(180deg, var(--bg-1), var(--bg-0));
+    border-top:1px solid var(--line);
+    text-align:center;
+  }
+  .cta-final h2{
+    font-size:clamp(1.8rem, 4vw, 2.6rem);
+    max-width:16ch;
+    margin:0 auto 18px;
+  }
+  .cta-final p{
+    color:var(--text-1);
+    max-width:46ch;
+    margin:0 auto 32px;
+  }
+  .signup{
+    display:flex;
+    gap:10px;
+    max-width:420px;
+    margin:0 auto;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .signup input[type=email]{
+    flex:1;
+    min-width:220px;
+    background:var(--bg-2);
+    border:1px solid var(--line);
+    color:var(--text-0);
+    padding:14px 16px;
+    border-radius:999px;
+    font-size:0.95rem;
+    font-family:inherit;
+  }
+  .signup input[type=email]::placeholder{ color:var(--text-2); }
+  .form-msg{
+    margin-top:16px;
+    font-size:0.9rem;
+    min-height:1.2em;
+    color:var(--amber);
+  }
+
+  /* ---------- Footer ---------- */
+  footer{
+    padding:40px 0;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+    color:var(--text-2);
+    font-size:0.85rem;
+  }
+  footer nav ul{
+    display:flex; gap:22px; list-style:none; padding:0; margin:0;
+  }
+  footer nav ul a{ color:var(--text-2); text-decoration:none; }
+  footer nav ul a:hover{ color:var(--text-1); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">
+      <span class="logo-mark" aria-hidden="true"></span>
+      Orbital Sound
+    </div>
+    <nav aria-label="Navegação principal" class="nav-links-mobile-hide">
+      <ul>
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#recursos">Recursos</a></li>
+        <li><a href="#specs">Especificações</a></li>
+      </ul>
+    </nav>
+    <a class="nav-cta" href="#reservar">Reservar o meu</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Alto-falante Bluetooth com levitação magnética</p>
+        <h1 class="display">O som que se solta da mesa.</h1>
+        <p class="sub">Orbital Sound flutua a 2 cm da base, girando devagar no ar enquanto recarrega por indução. Sem fios, sem apoio — só o campo magnético segurando o som no lugar.</p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="#reservar">Reservar o meu</a>
+          <a class="btn-ghost" href="#como-funciona">Ver como funciona</a>
+        </div>
+        <p class="hero-note">Entrega em 4–6 semanas · Garantia de 2 anos · Base inclusa</p>
+      </div>
+
+      <div class="stage" aria-hidden="true">
+        <div class="field-ring r1"></div>
+        <div class="field-ring r2"></div>
+        <div class="field-ring r3"></div>
+        <div class="floater-shadow"></div>
+        <div class="floater"></div>
+        <div class="base-plate"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="como-funciona">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Como funciona</p>
+        <h2>Três forças, um equilíbrio</h2>
+        <p>Nenhum truque: só física bem calibrada, ajustada 1.000 vezes por segundo.</p>
+      </div>
+      <div class="how-steps">
+        <div class="step">
+          <div class="step-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#9B84FF" stroke-width="1.6"/><circle cx="12" cy="12" r="3.4" fill="#9B84FF"/></svg>
+          </div>
+          <h3>Levitação eletromagnética</h3>
+          <p>Bobinas na base geram um campo que se opõe à gravidade e mantém o alto-falante suspenso e estável.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 12h4l2-7 4 14 2-7h4" stroke="#9B84FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Sensor de equilíbrio</h3>
+          <p>Um giroscópio interno mede a posição 1.000 vezes por segundo e corrige o campo antes que você note qualquer oscilação.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" stroke="#9B84FF" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Recarga por indução</h3>
+          <p>A mesma base que sustenta o campo magnético transfere energia sem fio — a bateria dura 14 horas por carga.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="recursos">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Recursos</p>
+        <h2>Feito para ficar no centro da sala</h2>
+        <p>Um objeto que se explica sozinho — e um som que acompanha.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature">
+          <span class="num">Áudio</span>
+          <h3>Som 360°</h3>
+          <p>Dois drivers full-range e um radiador passivo distribuem o som igualmente em qualquer direção da sala.</p>
+        </div>
+        <div class="feature">
+          <span class="num">Rotação</span>
+          <h3>Giro contínuo</h3>
+          <p>O corpo gira lentamente sobre o próprio eixo, guiado pelo campo — sem motor, sem ruído mecânico.</p>
+        </div>
+        <div class="feature">
+          <span class="num">Conexão</span>
+          <h3>Bluetooth 5.3</h3>
+          <p>Pareamento instantâneo com até dois dispositivos ao mesmo tempo, alcance de até 15 metros.</p>
+        </div>
+        <div class="feature">
+          <span class="num">Bateria</span>
+          <h3>14 horas de uso</h3>
+          <p>Carga completa em 2h30 na base. Basta se aproximar — sem encaixar, sem conectar cabos.</p>
+        </div>
+        <div class="feature">
+          <span class="num">Resistência</span>
+          <h3>Proteção IPX4</h3>
+          <p>Resiste a respingos, perfeito para a cozinha, o banheiro ou uma tarde na varanda.</p>
+        </div>
+        <div class="feature">
+          <span class="num">Materiais</span>
+          <h3>Alumínio escovado</h3>
+          <p>Corpo em alumínio e tecido acústico reciclado, disponível em grafite e areia.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="specs" id="specs">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Especificações</p>
+        <h2>Números que sustentam a flutuação</h2>
+      </div>
+      <div class="specs-grid">
+        <dl>
+          <div class="spec-row"><dt>Altura de levitação</dt><dd>18–22 mm</dd></div>
+          <div class="spec-row"><dt>Potência de saída</dt><dd>2 × 15 W + radiador passivo</dd></div>
+          <div class="spec-row"><dt>Alcance Bluetooth</dt><dd>Até 15 m</dd></div>
+          <div class="spec-row"><dt>Autonomia</dt><dd>14 horas de reprodução</dd></div>
+        </dl>
+        <dl>
+          <div class="spec-row"><dt>Tempo de carga</dt><dd>2h30 (indução)</dd></div>
+          <div class="spec-row"><dt>Peso do corpo flutuante</dt><dd>420 g</dd></div>
+          <div class="spec-row"><dt>Resistência</dt><dd>IPX4</dd></div>
+          <div class="spec-row"><dt>Cores disponíveis</dt><dd>Grafite, Areia</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap testimonial">
+      <p>"Deixei tocando na sala e passei uma semana inteira olhando ele girar antes de prestar atenção na música."</p>
+      <p class="who">— Marina T., early adopter</p>
+    </div>
+  </section>
+
+  <section class="cta-final" id="reservar">
+    <div class="wrap">
+      <h2>Garanta o seu antes do lançamento</h2>
+      <p>Reserve agora e trave o preço de pré-venda. Cobrança apenas quando o produto for enviado.</p>
+      <form id="signup-form" class="signup" novalidate>
+        <label for="email" class="visually-hidden" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);">Seu e-mail</label>
+        <input id="email" type="email" placeholder="seu@email.com" required>
+        <button class="btn-primary" type="submit">Reservar</button>
+      </form>
+      <p id="form-msg" class="form-msg" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; width:100%;">
+    <span>© 2026 Orbital Sound. Produto conceitual para fins acadêmicos.</span>
+    <nav aria-label="Links do rodapé">
+      <ul>
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#recursos">Recursos</a></li>
+        <li><a href="#specs">Especificações</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var form = document.getElementById('signup-form');
+    var msg = document.getElementById('form-msg');
+    var input = document.getElementById('email');
+
+    function isValidEmail(value){
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var value = input.value.trim();
+
+      if(!isValidEmail(value)){
+        msg.textContent = 'Digite um e-mail válido para continuar.';
+        input.focus();
+        return;
+      }
+
+      msg.textContent = 'Reserva confirmada — avisaremos ' + value + ' assim que o Orbital Sound estiver disponível.';
+      form.reset();
+    });
+
+    // Header shrink shadow on scroll
+    var header = document.querySelector('header');
+    window.addEventListener('scroll', function(){
+      if(window.scrollY > 8){
+        header.style.boxShadow = '0 8px 24px rgba(0,0,0,0.35)';
+      } else {
+        header.style.boxShadow = 'none';
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
